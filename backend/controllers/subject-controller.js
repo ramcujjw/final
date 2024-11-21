@@ -1,7 +1,10 @@
 const Subject = require('../models/subjectSchema.js');
 const Teacher = require('../models/teacherSchema.js');
 const Student = require('../models/studentSchema.js');
+const QRCode = require('qrcode');
+const Session = require('../models/sessionSchema.js'); // Ensure you have a Session model defined
 
+// Create Subject
 const subjectCreate = async (req, res) => {
     try {
         const subjects = req.body.subjects.map((subject) => ({
@@ -16,7 +19,7 @@ const subjectCreate = async (req, res) => {
         });
 
         if (existingSubjectBySubCode) {
-            res.send({ message: 'Sorry this subcode must be unique as it already exists' });
+            res.send({ message: 'Sorry, this subcode must be unique as it already exists' });
         } else {
             const newSubjects = subjects.map((subject) => ({
                 ...subject,
@@ -32,12 +35,13 @@ const subjectCreate = async (req, res) => {
     }
 };
 
+// Get All Subjects
 const allSubjects = async (req, res) => {
     try {
         let subjects = await Subject.find({ school: req.params.id })
-            .populate("sclassName", "sclassName")
+            .populate("sclassName", "sclassName");
         if (subjects.length > 0) {
-            res.send(subjects)
+            res.send(subjects);
         } else {
             res.send({ message: "No subjects found" });
         }
@@ -46,11 +50,12 @@ const allSubjects = async (req, res) => {
     }
 };
 
+// Get Class Subjects
 const classSubjects = async (req, res) => {
     try {
-        let subjects = await Subject.find({ sclassName: req.params.id })
+        let subjects = await Subject.find({ sclassName: req.params.id });
         if (subjects.length > 0) {
-            res.send(subjects)
+            res.send(subjects);
         } else {
             res.send({ message: "No subjects found" });
         }
@@ -59,6 +64,7 @@ const classSubjects = async (req, res) => {
     }
 };
 
+// Get Free Subjects List
 const freeSubjectList = async (req, res) => {
     try {
         let subjects = await Subject.find({ sclassName: req.params.id, teacher: { $exists: false } });
@@ -72,22 +78,23 @@ const freeSubjectList = async (req, res) => {
     }
 };
 
+// Get Subject Detail
 const getSubjectDetail = async (req, res) => {
     try {
         let subject = await Subject.findById(req.params.id);
         if (subject) {
-            subject = await subject.populate("sclassName", "sclassName")
-            subject = await subject.populate("teacher", "name")
+            subject = await subject.populate("sclassName", "sclassName");
+            subject = await subject.populate("teacher", "name");
             res.send(subject);
-        }
-        else {
+        } else {
             res.send({ message: "No subject found" });
         }
     } catch (err) {
         res.status(500).json(err);
     }
-}
+};
 
+// Delete Subject
 const deleteSubject = async (req, res) => {
     try {
         const deletedSubject = await Subject.findByIdAndDelete(req.params.id);
@@ -116,6 +123,7 @@ const deleteSubject = async (req, res) => {
     }
 };
 
+// Delete All Subjects in School
 const deleteSubjects = async (req, res) => {
     try {
         const deletedSubjects = await Subject.deleteMany({ school: req.params.id });
@@ -138,6 +146,7 @@ const deleteSubjects = async (req, res) => {
     }
 };
 
+// Delete Subjects by Class
 const deleteSubjectsByClass = async (req, res) => {
     try {
         const deletedSubjects = await Subject.deleteMany({ sclassName: req.params.id });
@@ -160,5 +169,35 @@ const deleteSubjectsByClass = async (req, res) => {
     }
 };
 
+// Generate QR Code for Subject Session
+const generateQR = async (req, res) => {
+    const { classId, sessionId } = req.body;
 
-module.exports = { subjectCreate, freeSubjectList, classSubjects, getSubjectDetail, deleteSubjectsByClass, deleteSubjects, deleteSubject, allSubjects };
+    try {
+        const qrData = `${sessionId}-${new Date().toISOString()}`;
+        const qrCode = await QRCode.toDataURL(qrData);
+
+        const newSession = new Session({
+            classId,
+            sessionId,
+            qrCode,
+        });
+
+        await newSession.save();
+        res.send(qrCode);
+    } catch (err) {
+        res.status(500).send('Server error');
+    }
+};
+
+module.exports = {
+    subjectCreate,
+    freeSubjectList,
+    classSubjects,
+    getSubjectDetail,
+    deleteSubjectsByClass,
+    deleteSubjects,
+    deleteSubject,
+    allSubjects,
+    generateQR
+};

@@ -53,6 +53,10 @@ const studentSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'subject',
             required: true
+        },
+        sessionId: {
+            type: String,
+            required: true // Add sessionId field to the attendance sub-document
         }
     }]
 });

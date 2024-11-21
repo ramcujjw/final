@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = express();
 
-const attendanceRoutes = require('./routes/attendance');
+const attendanceRoutes = require('./routes/attendance'); // Adjusted to match your attendance route
 const Routes = require("./routes/route.js");
 
 const PORT = process.env.PORT || 5000;

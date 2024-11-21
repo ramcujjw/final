@@ -2,7 +2,10 @@ const Sclass = require('../models/sclassSchema.js');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
 const Teacher = require('../models/teacherSchema.js');
+const QRCode = require('qrcode');
+const Session = require('../models/sessionSchema.js'); // Ensure you have a Session model defined
 
+// Create Class
 const sclassCreate = async (req, res) => {
     try {
         const sclass = new Sclass({
@@ -16,9 +19,8 @@ const sclassCreate = async (req, res) => {
         });
 
         if (existingSclassByName) {
-            res.send({ message: 'Sorry this class name already exists' });
-        }
-        else {
+            res.send({ message: 'Sorry, this class name already exists' });
+        } else {
             const result = await sclass.save();
             res.send(result);
         }
@@ -27,37 +29,39 @@ const sclassCreate = async (req, res) => {
     }
 };
 
+// List Classes
 const sclassList = async (req, res) => {
     try {
-        let sclasses = await Sclass.find({ school: req.params.id })
+        let sclasses = await Sclass.find({ school: req.params.id });
         if (sclasses.length > 0) {
-            res.send(sclasses)
+            res.send(sclasses);
         } else {
-            res.send({ message: "No sclasses found" });
+            res.send({ message: "No classes found" });
         }
     } catch (err) {
         res.status(500).json(err);
     }
 };
 
+// Get Class Details
 const getSclassDetail = async (req, res) => {
     try {
         let sclass = await Sclass.findById(req.params.id);
         if (sclass) {
-            sclass = await sclass.populate("school", "schoolName")
+            sclass = await sclass.populate("school", "schoolName");
             res.send(sclass);
-        }
-        else {
+        } else {
             res.send({ message: "No class found" });
         }
     } catch (err) {
         res.status(500).json(err);
     }
-}
+};
 
+// Get Students in Class
 const getSclassStudents = async (req, res) => {
     try {
-        let students = await Student.find({ sclassName: req.params.id })
+        let students = await Student.find({ sclassName: req.params.id });
         if (students.length > 0) {
             let modifiedStudents = students.map((student) => {
                 return { ...student._doc, password: undefined };
@@ -69,8 +73,9 @@ const getSclassStudents = async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
-}
+};
 
+// Delete Class
 const deleteSclass = async (req, res) => {
     try {
         const deletedClass = await Sclass.findByIdAndDelete(req.params.id);
@@ -84,8 +89,9 @@ const deleteSclass = async (req, res) => {
     } catch (error) {
         res.status(500).json(error);
     }
-}
+};
 
+// Delete All Classes in School
 const deleteSclasses = async (req, res) => {
     try {
         const deletedClasses = await Sclass.deleteMany({ school: req.params.id });
@@ -99,7 +105,27 @@ const deleteSclasses = async (req, res) => {
     } catch (error) {
         res.status(500).json(error);
     }
-}
+};
 
+// Generate QR Code for Attendance
+const generateQR = async (req, res) => {
+    const { classId, sessionId } = req.body;
 
-module.exports = { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents };
+    try {
+        const qrData = `${sessionId}-${new Date().toISOString()}`;
+        const qrCode = await QRCode.toDataURL(qrData);
+
+        const newSession = new Session({
+            classId,
+            sessionId,
+            qrCode,
+        });
+
+        await newSession.save();
+        res.send(qrCode);
+    } catch (err) {
+        res.status(500).send('Server error');
+    }
+};
+
+module.exports = { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents, generateQR };

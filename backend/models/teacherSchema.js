@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const teacherSchema = new mongoose.Schema({
     name: {
@@ -42,8 +42,12 @@ const teacherSchema = new mongoose.Schema({
         },
         absentCount: {
             type: String,
+        },
+        sessionId: {
+            type: String, // Add sessionId field to link with specific session
+            required: true
         }
     }]
 }, { timestamps: true });
 
-module.exports = mongoose.model("teacher", teacherSchema)
+module.exports = mongoose.model("teacher", teacherSchema);
