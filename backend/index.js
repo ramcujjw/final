@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = express();
 
-const attendanceRoutes = require('./routes/attendance'); // Adjusted to match your attendance route
+
 const Routes = require("./routes/route.js");
 
 const PORT = process.env.PORT || 5000;
@@ -16,8 +16,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
 // Routes
-app.use('/api/attendance', attendanceRoutes);
-app.use('/', Routes);
+app.use('/api', Routes);
 
 // Database Connection
 mongoose
