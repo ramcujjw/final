@@ -3,25 +3,28 @@ import { Container, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 
 const AddStudent = () => {
-    const [student, setStudent] = useState({
+    const [studentData, setStudentData] = useState({
         name: '',
         rollNum: '',
         email: '',
-        password: ''
+        password: '',
     });
 
     const handleChange = (e) => {
-        setStudent({ ...student, [e.target.name]: e.target.value });
+        setStudentData({ ...studentData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/api/students', student);
-            console.log('Student added:', response.data);
-        } catch (error) {
-            console.error('Error adding student:', error);
-        }
+        // Post student data to the backend
+        axios.post('/api/admin/students', studentData)
+            .then(response => {
+                alert('Student added successfully');
+                setStudentData({ name: '', rollNum: '', email: '', password: '' }); // Reset form
+            })
+            .catch(error => {
+                console.error('Error adding student', error);
+            });
     };
 
     return (
@@ -33,7 +36,7 @@ const AddStudent = () => {
                     name="name"
                     fullWidth
                     margin="normal"
-                    value={student.name}
+                    value={studentData.name}
                     onChange={handleChange}
                     required
                 />
@@ -42,7 +45,7 @@ const AddStudent = () => {
                     name="rollNum"
                     fullWidth
                     margin="normal"
-                    value={student.rollNum}
+                    value={studentData.rollNum}
                     onChange={handleChange}
                     required
                 />
@@ -52,7 +55,7 @@ const AddStudent = () => {
                     type="email"
                     fullWidth
                     margin="normal"
-                    value={student.email}
+                    value={studentData.email}
                     onChange={handleChange}
                     required
                 />
@@ -62,7 +65,7 @@ const AddStudent = () => {
                     type="password"
                     fullWidth
                     margin="normal"
-                    value={student.password}
+                    value={studentData.password}
                     onChange={handleChange}
                     required
                 />

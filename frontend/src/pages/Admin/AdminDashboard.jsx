@@ -7,35 +7,32 @@ import {
     Typography,
     Divider,
 } from '@mui/material';
+import AdminSideBar from '../../components/Common/Sidebar';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppBar, Drawer } from '../../components/styles';
 import Logout from '../../components/Logout';
-import SideBar from './SideBar';
-import AdminProfile from './AdminProfile';
-import AdminHomePage from './AdminHomePage';
+import { AppBar, Drawer } from '../../components/styles';
 
+import AdminHomePage from './AdminHomePage';
+import AdminProfile from './AdminProfile';
+import AddClass from './classRelated/AddClass';
+import ClassDetails from './classRelated/ClassDetails';
+import ShowClasses from './classRelated/ShowClasses';
 import AddStudent from './studentRelated/AddStudent';
 import ShowStudents from './studentRelated/ShowStudents';
-import StudentAttendance from './studentRelated/StudentAttendance';
-import StudentExamMarks from './studentRelated/StudentExamMarks';
+// import StudentAttendance from './studentRelated/StudentAttendance';
+// import StudentExamMarks from './studentRelated/StudentExamMarks';
 import ViewStudent from './studentRelated/ViewStudent';
-
 import ShowSubjects from './subjectRelated/ShowSubjects';
 import SubjectForm from './subjectRelated/SubjectForm';
 import ViewSubject from './subjectRelated/ViewSubject';
-
 import AddTeacher from './teacherRelated/AddTeacher';
 import ChooseClass from './teacherRelated/ChooseClass';
 import ChooseSubject from './teacherRelated/ChooseSubject';
 import ShowTeachers from './teacherRelated/ShowTeachers';
 import TeacherDetails from './teacherRelated/TeacherDetails';
 
-import AddClass from './classRelated/AddClass';
-import ClassDetails from './classRelated/ClassDetails';
-import ShowClasses from './classRelated/ShowClasses';
-
 const AdminDashboard = () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -70,7 +67,7 @@ const AdminDashboard = () => {
                 </Toolbar>
                 <Divider />
                 <List component="nav">
-                    <SideBar />
+                    <AdminSideBar />
                 </List>
             </Drawer>
             <Box component="main" sx={styles.boxStyled}>
@@ -80,37 +77,24 @@ const AdminDashboard = () => {
                     <Route path='*' element={<Navigate to="/" />} />
                     <Route path="/Admin/dashboard" element={<AdminHomePage />} />
                     <Route path="/Admin/profile" element={<AdminProfile />} />
-
-                    {/* Subject */}
+                    <Route path="/Admin/addclass" element={<AddClass />} />
+                    <Route path="/Admin/classes" element={<ShowClasses />} />
+                    <Route path="/Admin/classes/class/:id" element={<ClassDetails />} />
+                    <Route path="/Admin/addstudents" element={<AddStudent />} />
+                    <Route path="/Admin/students" element={<ShowStudents />} />
+                    <Route path="/Admin/students/student/:id" element={<ViewStudent />} />
+                    <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance />} />
+                    <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks />} />
                     <Route path="/Admin/subjects" element={<ShowSubjects />} />
                     <Route path="/Admin/subjects/subject/:classID/:subjectID" element={<ViewSubject />} />
                     <Route path="/Admin/subjects/chooseclass" element={<ChooseClass situation="Subject" />} />
                     <Route path="/Admin/addsubject/:id" element={<SubjectForm />} />
-                    <Route path="/Admin/class/subject/:classID/:subjectID" element={<ViewSubject />} />
-                    <Route path="/Admin/subject/student/attendance/:studentID/:subjectID" element={<StudentAttendance situation="Subject" />} />
-                    <Route path="/Admin/subject/student/marks/:studentID/:subjectID" element={<StudentExamMarks situation="Subject" />} />
-
-                    {/* Class */}
-                    <Route path="/Admin/addclass" element={<AddClass />} />
-                    <Route path="/Admin/classes" element={<ShowClasses />} />
-                    <Route path="/Admin/classes/class/:id" element={<ClassDetails />} />
-                    <Route path="/Admin/class/addstudents/:id" element={<AddStudent situation="Class" />} />
-
-                    {/* Student */}
-                    <Route path="/Admin/addstudents" element={<AddStudent situation="Student" />} />
-                    <Route path="/Admin/students" element={<ShowStudents />} />
-                    <Route path="/Admin/students/student/:id" element={<ViewStudent />} />
-                    <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance situation="Student" />} />
-                    <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks situation="Student" />} />
-
-                    {/* Teacher */}
                     <Route path="/Admin/teachers" element={<ShowTeachers />} />
                     <Route path="/Admin/teachers/teacher/:id" element={<TeacherDetails />} />
                     <Route path="/Admin/teachers/chooseclass" element={<ChooseClass situation="Teacher" />} />
                     <Route path="/Admin/teachers/choosesubject/:id" element={<ChooseSubject situation="Norm" />} />
                     <Route path="/Admin/teachers/choosesubject/:classID/:teacherID" element={<ChooseSubject situation="Teacher" />} />
-                    <Route path="/Admin/teachers/addteacher/:id" element={<AddTeacher />} />
-
+                    <Route path="/Admin/addteacher/:id" element={<AddTeacher />} />
                     <Route path="/logout" element={<Logout />} />
                 </Routes>
             </Box>
@@ -145,4 +129,4 @@ const styles = {
             display: 'none',
         },
     },
-}
+};
