@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -7,12 +7,10 @@ export const AuthProvider = ({ children }) => {
 
     const login = (userData) => {
         setUser(userData);
-        // Save user data to local storage or session
     };
 
     const logout = () => {
         setUser(null);
-        // Remove user data from local storage or session
     };
 
     return (

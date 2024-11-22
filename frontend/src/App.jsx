@@ -11,7 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
     return (
-        <Router>
+        <Router future={{ v7_relativeSplatPath: true }}>
             <Routes>
                 <Route path="/" element={<LoginSelection />} />
                 <Route path="/login/admin" element={<AdminLogin />} />

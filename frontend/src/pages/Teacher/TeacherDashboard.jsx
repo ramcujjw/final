@@ -7,7 +7,7 @@ import {
     Typography,
     Divider,
 } from '@mui/material';
-import TeacherSideBar from '../../components/Common/Sidebarr';
+import TeacherSideBar from '../../components/Common/TeacherSideBar';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Logout from '../../components/Logout';
 import { AppBar, Drawer } from '../../components/styles';
@@ -17,7 +17,6 @@ import TeacherClassDetails from './TeacherClassDetails';
 import TeacherHomePage from './TeacherHomePage';
 import TeacherProfile from './TeacherProfile';
 import TeacherViewStudent from './TeacherViewStudent';
-import StudentExamMarks from '../admin/studentRelated/StudentExamMarks';
 import GenerateQRCode from './GenerateQRCode';
 
 const TeacherDashboard = () => {
@@ -69,7 +68,6 @@ const TeacherDashboard = () => {
                     <Route path="/Teacher/class" element={<TeacherClassDetails />} />
                     <Route path="/Teacher/class/student/:id" element={<TeacherViewStudent />} />
                     <Route path="/Teacher/class/student/attendance/:studentID/:subjectID" element={<StudentAttendance situation="Subject" />} />
-                    <Route path="/Teacher/class/student/marks/:studentID/:subjectID" element={<StudentExamMarks situation="Subject" />} />
                     <Route path="/Teacher/generate-qr" element={<GenerateQRCode />} />
                     <Route path="/logout" element={<Logout />} />
                 </Routes>
